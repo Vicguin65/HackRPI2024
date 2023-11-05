@@ -1,6 +1,7 @@
 import { Component } from "react";
 import "./generator.css";
 import axios from "axios";
+import { SyllabusGeneratorService } from "./services/Service.SyllabusGenerator";
 
 class SyllabusGenerator extends Component {
   constructor(props) {
@@ -34,10 +35,53 @@ class SyllabusGenerator extends Component {
     });
   };
 
-  handleSubmit = (event) => {
+  validateSyllabusData = (data) => {
+    const errors = {};
+    if (data.start_day === "") {
+      errors.startDate = "Start Date is required";
+    }
+    if (data.end_day === "") {
+      errors.endDate = "End Date is required";
+    }
+    if (data.course_name === "") {
+      errors.courseTitle = "Course title is required";
+    }
+    if (data.course_description === "") {
+      errors.courseDescription = "Course description is required";
+    }
+    if (data.meetings_days.length === 0) {
+      errors.daysOfClass = "Days of class is required";
+    }
+
+    return errors;
+  };
+
+  handleSubmit = async (event) => {
     event.preventDefault();
-    // You can access the syllabus data in this.state and perform actions like saving it to a database, etc.
-    console.log("Syllabus Data:", this.state);
+
+    try {
+      const syllabusData = {
+        start_day: this.state.startDate,
+        end_day: this.state.endDate,
+        course_name: this.state.courseTitle,
+        course_description: this.state.courseDescription,
+        meetings_days: this.state.daysOfClass, 
+      };
+
+      const validationErrors = this.validateSyllabusData(syllabusData);
+
+      if (Object.keys(validationErrors).length === 0) {
+        const syllabusGenerator = new SyllabusGeneratorService();
+        const generatedSyllabus = await syllabusGenerator.getSyllabus(
+          syllabusData
+        );
+        console.log("Generated Syllabus:", generatedSyllabus);
+      } else {
+        console.log("error", validationErrors);
+      }
+    } catch (error) {
+      console.error("Error generating syllabus:", error);
+    }
   };
 
   render() {
