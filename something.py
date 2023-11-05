@@ -24,9 +24,9 @@ response = openai.ChatCompletion.create(
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Can you create a syllabus given this course name " + course_name + "and description" +  "which meets on" + meet_days 
-         + "from" + start_day + "to" + end_day + ". For each day, draft a lesson plan and generate three key learning questions that can be used to gage \
+         + "from" + start_day + "to" + end_day + ". For each day, draft a lesson plan with goals and objectives of the class and generate three key learning questions that can be used to gage \
              students' understandings of the material. Also add homework assignments for each week. Please return the dates in the format\
-                day of week, day month, year."},
+                day of week, day month, year. Please do not list it as a range of dates, but rather every single day the class will be meeting."},
              ]
 )
 
